@@ -28,6 +28,7 @@ struct ApplicationOptions
 {
     int width = 1280;
     int height = 720;
+    bool startupTimings = false;
     bool fullscreen = false;
     bool visible = true;
     bool music = true;
