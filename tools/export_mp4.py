@@ -27,11 +27,11 @@ def resolution(value):
 
 
 def default_executable():
-    for candidate in (ROOT / "build/cmake/runtime/project", ROOT / "build/cmake/runtime/project.exe",
-                      ROOT / "build/cmake/runtime/project.app/Contents/MacOS/project", ROOT / "project", ROOT / "project.exe", ROOT / "project.app/Contents/MacOS/project"):
-        if candidate.is_file():
-            return candidate
-    return ROOT / "build/cmake/runtime/project"
+    candidates = (ROOT / "build/cmake/runtime/project", ROOT / "build/cmake/runtime/project.exe",
+                  ROOT / "build/cmake/runtime/project.app/Contents/MacOS/project", ROOT / "project",
+                  ROOT / "project.exe", ROOT / "project.app/Contents/MacOS/project")
+    available = [candidate for candidate in candidates if candidate.is_file()]
+    return max(available, key=lambda path: path.stat().st_mtime_ns) if available else candidates[0]
 
 
 def resource_directory(executable):
@@ -128,6 +128,7 @@ def main():
     impact = resources / "build/music/impact.wav"
     width, height = args.resolution
     output.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Executable: {executable}", flush=True)
     # Temporary files contain compressed video and audio, never raw video frame sequences.
     with tempfile.TemporaryDirectory(prefix="cinematic-export-", dir=output.parent) as temporary:
         temporary = Path(temporary)
