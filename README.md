@@ -2,154 +2,163 @@
 
 [![CI](https://github.com/Hicha-m/solar-system/actions/workflows/cmake-multi-platform.yml/badge.svg?branch=master)](https://github.com/Hicha-m/solar-system/actions/workflows/cmake-multi-platform.yml)
 [![C++17](https://img.shields.io/badge/C%2B%2B-17-blue)](CMakeLists.txt)
-[![OpenGL 3.3](https://img.shields.io/badge/OpenGL-3.3%2B-5586a4)](README.md#requirements-for-building)
-[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20Windows%20%7C%20macOS-555)](README.md#desktop-support-and-downloadable-packages)
+[![OpenGL 3.3](https://img.shields.io/badge/OpenGL-3.3-5586a4)](#requirements)
+[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-555)](#downloads)
+[![Latest release](https://img.shields.io/github/v/release/Hicha-m/solar-system)](https://github.com/Hicha-m/solar-system/releases/latest)
 
-Real-time OpenGL project featuring a cinematic journey from an Earth under
-meteor bombardment to a wide shot of the Solar System and the Milky Way.
+A real-time space cinematic written in C++17 with OpenGL 3.3. The sequence
+combines meteor impacts, Earth destruction, a shuttle flight and a camera
+journey through the Solar System and the Milky Way.
 
 ![Space cinematic preview](image.gif)
 
-## Running the application
+## Downloads
 
-The project supports native desktop builds for **Linux, Windows and macOS**.
-For a ready-to-run build, see [GitHub Releases](https://github.com/Hicha-m/solar-system/releases)
-**after a versioned release has been published**. Native builds use the
-operating system's audio device; see [desktop packages](#desktop-support-and-downloadable-packages)
-and [build instructions](#requirements-for-building).
+Download the packaged application from [Release 1.0.2](https://github.com/Hicha-m/solar-system/releases/tag/1.0.2):
 
-For a reproducible Linux build and automated graphical tests, see [Docker](#docker).
-Docker desktop GUI/audio forwarding is Linux-specific and not a substitute for
-native Windows or macOS packages.
+| Platform | Architecture | Download |
+| --- | --- | --- |
+| Linux | x64 (Intel / AMD) | [Download `.tar.gz`](https://github.com/Hicha-m/solar-system/releases/download/1.0.2/OpenGLSpaceCinematic-1.0.0-Linux-x86_64.tar.gz) |
+| Linux | ARM64 | [Download `.tar.gz`](https://github.com/Hicha-m/solar-system/releases/download/1.0.2/OpenGLSpaceCinematic-1.0.0-Linux-aarch64.tar.gz) |
+| macOS | Apple Silicon | [Download `.zip`](https://github.com/Hicha-m/solar-system/releases/download/1.0.2/OpenGLSpaceCinematic-1.0.0-Darwin-arm64.zip) |
+| macOS | Intel | [Download `.zip`](https://github.com/Hicha-m/solar-system/releases/download/1.0.2/OpenGLSpaceCinematic-1.0.0-Darwin-x86_64.zip) |
+| Windows | x64 (Intel / AMD) | [Download `.zip`](https://github.com/Hicha-m/solar-system/releases/download/1.0.2/OpenGLSpaceCinematic-1.0.0-Windows-AMD64.zip) |
 
-## Overview
+Extract the complete archive before launching `project` on Linux, `project.app`
+on macOS, or `project.exe` on Windows. Keep all bundled resources in place.
+A graphics driver supporting OpenGL 3.3 is required.
 
-This project combines a scripted camera sequence with real-time rendering and
-simulation. It demonstrates a complete OpenGL scene rather than a collection
-of isolated effects:
+See [all releases](https://github.com/Hicha-m/solar-system/releases) for other versions.
 
-- Earth lighting with day/night, normal, specular, damage and heat maps.
-- Deterministic meteor showers, collisions, trails and impact effects.
-- Progressive crust damage, cracks and a 32-piece Earth breakup.
-- HDR rendering, bloom, emissive materials and impact lights.
-- A shuttle flight followed by a Solar System and Milky Way reveal.
-- Music and impact sounds synchronized with the cinematic timeline.
-- A free FPS camera for exploring the scene while the sequence continues.
+## Video
+
+[Watch the project video on YouTube](https://youtu.be/fuUNtIMqqgY).
 
 ## Features
 
-### Cinematic sequence
+- Scripted camera animation with pause, restart, seeking and playback speed controls.
+- Meteor showers, collision detection, particle trails and impact lights.
+- Earth surface damage, heat, cracks and animated fragmentation.
+- Textured planets, Saturn rings, HDR rendering and bloom.
+- Music and impact sound playback through SDL3.
+- Free camera mode for exploring the scene.
+- MP4 export with configurable resolution, frame rate and audio.
 
-The main sequence lasts approximately 110 seconds. It starts with an intact
-Earth, builds through several meteor waves, triggers the destruction sequence,
-then pulls back from the shuttle to the Solar System and the galaxy.
+## Requirements
 
-### Meteor simulation
+To build from source:
 
-Meteors are generated on the CPU with reproducible random seeds. Their
-continuous collision detection prevents tunneling at high speed. Impacts feed
-the damage, heat, particle, light and audio systems independently.
+| Dependency | Requirement |
+| --- | --- |
+| Compiler | C++17 support; C and C++ toolchains are required |
+| CMake | 3.21 or newer |
+| OpenGL | Driver supporting OpenGL 3.3 core |
+| GLFW | 3.3 or newer |
+| GLM | Development headers and CMake package |
+| SDL3 | 3.2 or newer |
+| FFmpeg | Available as `ffmpeg` on `PATH` |
+| Python 3 | Required for MP4 export and the Python tests |
 
-### Earth destruction
+GLAD, stb_image and dr_mp3 are included in [`third_party/`](third_party/README.md).
+FFmpeg prepares the impact sound during compilation and encodes video exports.
+Normal application playback does not require FFmpeg.
 
-Impact energy accumulates into a global destruction level. The surface develops
-burn marks, temporary heat and procedural cracks before the Earth separates into
-animated fragments around an emissive core.
+Interactive playback requires a graphical desktop session. Run all build
+commands below from the repository root unless another directory is specified.
 
-### Rendering
-
-The renderer uses shared meshes and materials, instanced particles, textured
-planets, transparent Saturn rings and an HDR pipeline with bloom. The design
-keeps simulation, scene management and rendering in separate modules.
-
-### Audio
-
-The cinematic music drives the visible timeline when it is available. The bundled
-dr_mp3 decoder loads the original MP3 into PCM memory at startup; SDL3 handles
-playback, volume, mute and impact sounds. Only the short impact sound is converted
-to WAV by FFmpeg during the build.
-
-## Desktop support and downloadable packages
-
-The desktop targets are **Windows x64, macOS Apple Silicon / Intel, and Linux
-x64 / ARM64**. Each platform has its own executable; one binary cannot run on
-all operating systems. A graphics driver supporting OpenGL 3.3 is required.
-
-Once a versioned release has been published, download the platform-specific
-archive from [GitHub Releases](https://github.com/Hicha-m/solar-system/releases).
-Extract the complete archive before launching the application. You can move
-the extracted directory and launch it from another working directory,
-including paths containing spaces and non-ASCII characters.
-
-### Launch with sound
-
-Extract the entire platform-specific archive, keeping `build/music/`, the
-textures, models and shaders beside the executable (inside the macOS app bundle).
-The bundled MP3 music and impact WAV are included in the packages: **FFmpeg is
-not required for normal playback**.
-
-- **Windows 10/11 (x64):** launch `project.exe` from the extracted folder.
-  SDL3 uses the Windows audio output by default; check the system volume mixer
-  if music is muted.
-- **macOS (Apple Silicon or Intel):** extract the ZIP and open `project.app`.
-  On first launch macOS may require you to approve an unnotarized application in
-  **System Settings → Privacy & Security**. SDL3 uses the default macOS
-  audio output.
-- **Linux (x64/ARM64):** extract the tarball and launch `./project` from
-  the extracted directory in a graphical desktop session. SDL3 uses the
-  configured PulseAudio, PipeWire or ALSA audio backend.
-
-If no audio output is available the application can continue without sound.
-Do **not** set `SDL_AUDIO_DRIVER=dummy` for audible playback.
-
-macOS packages are ad-hoc signed, not Apple-notarized. Linux packages include
-SDL3, GLFW; system libraries and graphics drivers come from the host.
-The CI packages target the runner's operating system baseline, rather than every
-historical OS release. Rebuild from source for a different Linux baseline.
-
-## Requirements for building
-
-- C++17 compiler and CMake 3.21+ (GNU Make is also available on Linux).
-- OpenGL, GLFW 3.3+, GLM and SDL3 3.2+ development packages.
-- FFmpeg on `PATH` to convert the supplied MP3 files.
-- `stb_image` and the GLAD OpenGL loader are included in `third_party/`.
-
-### Linux and macOS (CMake)
-
-On Fedora:
+## Build from source
 
 ```bash
-sudo dnf install gcc-c++ cmake make glfw-devel glm-devel SDL3-devel ffmpeg
+git clone https://github.com/Hicha-m/solar-system.git
+cd solar-system
 ```
 
-On macOS:
+### Linux
+
+On Fedora, install the development dependencies:
 
 ```bash
-brew install cmake glfw glm sdl3 ffmpeg
+sudo dnf install gcc gcc-c++ cmake make pkgconf-pkg-config \
+  mesa-libGL-devel glfw-devel glm-devel SDL3-devel ffmpeg python3
 ```
 
-Ubuntu 24.04 requires SDL3 to be built from source; the Dockerfile and GitHub
-workflow handle this automatically. CMake uses the libraries' CMake packages;
-the GNU Make build uses `pkg-config`.
-
-Run from the project directory:
+On Ubuntu 24.04, install the system dependencies, then build SDL3 separately:
 
 ```bash
+sudo apt-get update
+sudo apt-get install -y build-essential cmake ninja-build pkg-config \
+  curl ca-certificates ffmpeg python3 libgl1-mesa-dev libglfw3-dev libglm-dev \
+  libasound2-dev libpulse-dev libx11-dev libxext-dev libxrandr-dev \
+  libxrender-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev
+
+mkdir -p build/deps
+curl -fL https://github.com/libsdl-org/SDL/releases/download/release-3.2.10/SDL3-3.2.10.tar.gz \
+  -o build/deps/SDL3-3.2.10.tar.gz
+tar -xzf build/deps/SDL3-3.2.10.tar.gz -C build/deps
+cmake -S build/deps/SDL3-3.2.10 -B build/deps/sdl-build -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PWD/build/deps/sdl" \
+  -DSDL_SHARED=ON -DSDL_STATIC=OFF -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF \
+  -DSDL_X11=ON -DSDL_WAYLAND=OFF
+cmake --build build/deps/sdl-build --parallel 2
+cmake --install build/deps/sdl-build
+```
+
+Configure the application. On Fedora:
+
+```bash
+cmake -S . -B build/cmake -DCMAKE_BUILD_TYPE=Release
+```
+
+On Ubuntu, point CMake to the SDL3 installation created above:
+
+```bash
+cmake -S . -B build/cmake -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH="$PWD/build/deps/sdl"
+```
+
+Then build, run the unit tests and launch:
+
+```bash
+cmake --build build/cmake --parallel 2
+ctest --test-dir build/cmake -L unit --output-on-failure
+cmake --build build/cmake --target run
+```
+
+The Linux executable is `build/cmake/runtime/project`.
+
+### macOS
+
+With Homebrew installed:
+
+```bash
+brew install cmake glfw glm sdl3 ffmpeg python
 cmake -S . -B build/cmake -DCMAKE_BUILD_TYPE=Release
 cmake --build build/cmake --parallel 2
 ctest --test-dir build/cmake -L unit --output-on-failure
 cmake --build build/cmake --target run
 ```
 
-### Windows (Visual Studio and vcpkg)
+The application bundle is `build/cmake/runtime/project.app`.
 
-Install Visual Studio 2022 with the Desktop development with C++ workload,
-CMake, Git, FFmpeg and [vcpkg](https://learn.microsoft.com/vcpkg/get_started/get-started).
-Set `VCPKG_ROOT` to your vcpkg checkout. The repository's `vcpkg.json` pins the
-library versions through a baseline. Run in PowerShell from the project directory:
+### Windows
+
+Install Visual Studio 2022 with the **Desktop development with C++** workload,
+CMake, Git and FFmpeg. Add FFmpeg to `PATH`.
+Install Python 3 if you want to export videos or run the Python tests.
+
+Clone and bootstrap vcpkg in a directory of your choice:
 
 ```powershell
-cmake -S . -B build/cmake -A x64 `
+git clone https://github.com/microsoft/vcpkg.git C:\dev\vcpkg
+& C:\dev\vcpkg\bootstrap-vcpkg.bat
+$env:VCPKG_ROOT = 'C:\dev\vcpkg'
+```
+
+Adjust this path if you already have vcpkg installed. From the project root,
+run the following in PowerShell:
+
+```powershell
+cmake -S . -B build/cmake -G "Visual Studio 17 2022" -A x64 `
   "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
   -DVCPKG_TARGET_TRIPLET=x64-windows-static `
   '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>'
@@ -158,224 +167,167 @@ ctest --test-dir build/cmake -C Release -L unit --output-on-failure
 cmake --build build/cmake --config Release --target run
 ```
 
-This configuration links the libraries and MSVC runtime statically. You can also
-use shared libraries; CMake includes their runtime dependencies during packaging.
-
-### Packaging and graphical validation
-
-After building:
-
-```bash
-cpack --config build/cmake/CPackConfig.cmake -C Release -B build/packages
-```
-
-This creates a ZIP on Windows/macOS or a compressed tar archive on Linux.
-The macOS `.app` includes its resources and bundled dylibs with rewritten paths.
-You can also stage an installation with
-`cmake --install build/cmake --config Release --prefix /path/to/installation`.
-Use `-DBUNDLE_RUNTIME_DEPENDENCIES=OFF` only if the destination provides the libraries.
-
-To enable the complete OpenGL integration test on Linux:
-
-```bash
-cmake -S . -B build/cmake -DENABLE_RUNTIME_TESTS=ON
-cmake --build build/cmake --parallel 2
-LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a ctest --test-dir build/cmake -L runtime --output-on-failure
-```
-
-`project --smoke-test` creates a hidden window, loads the complete scene, verifies
-music and impact audio initialization, and renders three frames. Set
-`SDL_AUDIO_DRIVER=dummy` for automated testing. This verifies the playback code;
-it cannot confirm what a user hears from a physical speaker.
-`--smoke-test --software-context` uses GLFW 3.4+ and an installed OSMesa library
-for graphical verification on machines without a display or native GPU.
-
-The full graphical test suite also accepts this context:
-
-```bash
-SDL_AUDIO_DRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 build/cmake/test_application --software-context
-```
-
-### GNU Make
-
-Run these commands from the project directory:
-
-```bash
-make              # Build the application
-make run          # Build and launch the cinematic
-make test         # Run CPU and audio tests
-make test-runtime # Run the hidden-window OpenGL test suite
-make clean        # Remove build files and generated executables
-```
-
-`make test-runtime` needs a working X11 display even though the test window is
-hidden. The build generates converted audio files in `build/music/`; the
-original MP3 files remain unchanged.
-
-## MP4 export
-
-Build the application, then run the exporter with Python 3 and FFmpeg on `PATH`:
-
-```bash
-python3 tools/export_mp4.py
-python3 tools/export_mp4.py --resolution 1080p --fps 60 --crf 18 --preset slow --output exports/film-1080p.mp4
-python3 tools/export_mp4.py --resolution 4k --fps 30 --output exports/film-4k.mp4
-python3 tools/export_mp4.py --resolution 640x360 --duration 5 --output exports/preview.mp4
-```
-
-On Windows, use `python` instead of `python3` if necessary.
-The exporter decodes the bundled `cinematic.mp3` into a temporary WAV for mixing; no pre-generated `cinematic.wav` is needed. The default export is `exports/cinematic.mp4`, at 1280×720 and 30 fps, with
-H.264 video and AAC audio. It includes the complete music and meteor impact
-sounds with distance attenuation. Frames are simulated at fixed time steps,
-so rendering speed does not alter the film's playback speed or audio timing.
-The renderer captures the HDR/bloom result before swapping buffers.
-
-| Option | Choices / effect |
-| --- | --- |
-| `--resolution` | `720p`, `1080p`, `1440p`, `4k`, or even pixel dimensions such as `1920x1080` |
-| `--fps` | 1–240; default 30, typically 30 or 60 |
-| `--crf` | 0–51; lower means better quality and larger files; default 18 |
-| `--preset` | `ultrafast` through `veryslow`; default `medium`; slower encoding generally makes smaller files |
-| `--duration` | Render the first N seconds; default is the music duration |
-| `--no-audio` | Omit music and impacts |
-| `--output` | Destination `.mp4`; existing files are preserved |
-| `--executable` | Explicit executable path for another build or downloaded package |
-| `--software-context` | Headless OSMesa rendering with GLFW 3.4+ and OSMesa installed |
-
-A working OpenGL context is required. Normal exports use a hidden desktop window;
-on Linux without a display, use Xvfb or the OSMesa option. Higher resolutions and
-frame rates increase rendering time. Export uses a compressed temporary video
-and a temporary audio mix, which are removed on completion or failure.
-The options are command-line settings; there is no graphical export dialog.
-
-## Docker
-
-The multi-stage Docker image builds SDL3 and the application, and runs CPU,
-audio-initialization and OpenGL tests under Xvfb. It is a **Linux container**,
-not a native Windows or macOS GUI application.
-
-```bash
-docker build -t solar-system .
-```
-
-### Linux desktop (X11/XWayland) with audio
-
-A running X11/XWayland session and an existing Xauthority file are required.
-For audible music and impact sounds, the example below forwards the host's
-PulseAudio-compatible socket (also provided by PipeWire's PulseAudio service)
-rather than selecting SDL3's silent `dummy` driver:
-
-```bash
-docker run --rm \
-  --user "$(id -u):$(id -g)" \
-  -e DISPLAY \
-  -e XAUTHORITY=/tmp/container.xauth \
-  -e LIBGL_ALWAYS_SOFTWARE=1 \
-  -e PULSE_SERVER=unix:/tmp/pulse/native \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v "${XAUTHORITY:-$HOME/.Xauthority}:/tmp/container.xauth:ro" \
-  -v "${XDG_RUNTIME_DIR}/pulse/native:/tmp/pulse/native" \
-  solar-system
-```
-
-Make sure `$XDG_RUNTIME_DIR/pulse/native` exists and your host audio server
-authorizes connections from the container. Depending on the desktop, access
-to the X11 cookie or PulseAudio server may need adjustment. Software-rendered
-OpenGL can be much slower than native graphics; the native Linux package is
-recommended for interactive use. For silent CI smoke tests only, use
-`-e SDL_AUDIO_DRIVER=dummy` and omit the PulseAudio forwarding options.
-
-### Windows and macOS
-
-Docker Desktop does **not** transparently forward a Linux container's OpenGL
-desktop window and sound to Windows or macOS. The Docker image is suitable for
-building or CI validation on those hosts, but the documented GUI/audio launch
-is supported on **Linux X11/XWayland only**. For interactive playback with sound
-on Windows and macOS, run the native `project.exe` or `project.app` described
-above instead. An X server and a separate audio bridge would require
-host-specific setup and are not provided by this project.
-
-On default-branch pushes, CI is configured to publish the Linux image to
-`ghcr.io/hicha-m/solar-system:latest` after its checks pass. Once published,
-you can pull it instead of building locally:
-
-```bash
-docker pull ghcr.io/hicha-m/solar-system:latest
-```
-
-Use `ghcr.io/hicha-m/solar-system:latest` in place of `solar-system` in the
-Linux `docker run` command above.
-
-
-```bash
-./project --startup-timings
-# Headless verification:
-SDL_AUDIO_DRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 ./project --smoke-test --software-context --startup-timings
-```
+The manifest in [`vcpkg.json`](vcpkg.json) declares GLFW, GLM and SDL3 and pins
+the vcpkg baseline. The executable is `build/cmake/runtime/project.exe`.
 
 ## Controls
 
 | Key | Action |
 | --- | --- |
-| `Space` | Pause or resume the sequence and music |
-| `R` | Restart the complete cinematic |
-| `Left` / `Right` | Seek backward or forward by 10 seconds |
-| `Up` / `+` | Double playback speed, up to 8x |
-| `Down` / `-` | Halve playback speed, down to 0.25x |
-| `0` | Restore normal speed |
+| `Space` | Pause or resume the cinematic and music |
+| `R` | Restart the cinematic |
+| `Left` / `Right` | Seek backward / forward by 10 seconds |
+| `Up` / `+` | Increase playback speed |
+| `Down` / `-` | Decrease playback speed |
+| `0` | Restore normal playback speed |
 | `M` | Mute or unmute audio |
-| `F3` | Switch between cinematic and FPS camera |
-| `F11` | Toggle fullscreen and restore the previous window size and position |
-| `W` / `S` | Move forward or backward in FPS mode |
-| `A` / `D` | Strafe left or right in FPS mode |
-| `Z` / `X` | Move up or down in FPS mode |
-| Mouse | Look around in FPS mode |
-| `G` / `H` | Increase or decrease FPS movement speed |
+| `F3` | Switch between cinematic and free camera modes |
+| `W` / `S` | Move forward / backward in free camera mode |
+| `A` / `D` | Move left / right in free camera mode |
+| `Z` / `X` | Move up / down in free camera mode |
+| Mouse | Look around in free camera mode |
+| `G` / `H` | Increase / decrease free camera movement speed |
 | `F1` | Toggle wireframe rendering |
 | `F2` | Toggle camera information |
+| `F11` | Toggle fullscreen |
 | `Esc` | Quit |
 
-## Project structure
+## Export to MP4
 
-```text
-src/
-├── Application.cpp       Application loop, input and system orchestration
-├── animation/            Timeline, keyframes and animation tracks
-├── audio/                SDL3 music and impact playback
-├── camera/               FPS, orbit and cinematic cameras
-├── cinematic/            Main film sequence and scene choreography
-├── geometry/             Sphere generation and collision geometry
-├── graphics/             Meshes, shaders, textures, HDR and particles
-├── scene/                Objects, materials, lights and scene setup
-└── systems/              Meteors, solar system, damage, breakup and particles
-
-shaders/                  GLSL vertex and fragment shaders
-textures/                 Planet, space and effect textures
-models/                   Shuttle model and material data
-audio/                    Music and impact sound sources
-tests/                    CPU, audio and OpenGL integration tests
-```
-
-## Testing
-
-The test suite covers deterministic replay, animation, orbital motion, meteor
-spawning and collision, particle and trail emission, impact lights, Earth
-damage and heat, destruction level, breakup state and audio behavior.
-
-The runtime tests also exercise OpenGL resource loading, HDR/bloom rendering,
-occlusion, particle instancing, reset behavior and full-sequence replay.
-Generated diagnostic captures are written to `/tmp` by the runtime tests.
-
-## Assets
-
-The project uses the supplied textures, shuttle model and audio files. Resources
-are resolved beside the executable (inside `Resources` for a macOS bundle).
-The GNU Make build can be launched with `make run` or from this directory:
+Build the application first. The exporter requires Python 3, FFmpeg with the
+`libx264` and AAC encoders, and a working OpenGL context.
 
 ```bash
-./project
+# Short preview
+python3 tools/export_mp4.py --duration 5 --output exports/preview.mp4
+
+# Full cinematic at 1080p and 60 fps
+python3 tools/export_mp4.py --resolution 1080p --fps 60 --output exports/cinematic-1080p.mp4
 ```
+
+On Windows, use `python` instead of `python3` if that is your Python command.
+The default export is `exports/cinematic.mp4` at 1280 × 720 and 30 fps, with
+H.264 video and AAC audio. Its duration follows the music track unless
+`--duration` is supplied. Existing output files are never overwritten.
+
+| Option | Description |
+| --- | --- |
+| `--resolution` | `720p`, `1080p`, `1440p`, `4k`, or even dimensions such as `1920x1080` |
+| `--fps` | Frame rate from 1 to 240; default: 30 |
+| `--duration` | Duration in seconds; default: the music duration |
+| `--crf` | H.264 quality from 0 to 51; lower values increase quality; default: 18 |
+| `--preset` | FFmpeg encoding preset; default: `medium` |
+| `--no-audio` | Export without audio |
+| `--output` | Destination MP4 file |
+| `--executable` | Path to the application binary to use |
+
+Run `python3 tools/export_mp4.py --help` for all options. For a build outside
+`build/cmake`, pass its executable explicitly with `--executable`.
+
+On Linux without a display, install Xvfb and xauth, then run the exporter under
+Xvfb. For example:
+
+```bash
+LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a python3 tools/export_mp4.py \
+  --duration 5 --output exports/headless-preview.mp4
+```
+
+## Tests
+
+The unit tests cover assets, resource paths, audio, animation, meteor collisions,
+particles and Earth destruction. The CMake build also registers the exporter
+and CI metrics Python tests when a Python interpreter is available.
+
+```bash
+ctest --test-dir build/cmake -C Release -L unit --output-on-failure
+```
+
+The OpenGL integration suite is opt-in and requires a display. To enable it:
+
+```bash
+cmake -S . -B build/cmake -DENABLE_RUNTIME_TESTS=ON
+cmake --build build/cmake --config Release --parallel 2
+ctest --test-dir build/cmake -C Release -L runtime --output-on-failure
+```
+
+On Linux without a display, install Xvfb and xauth and replace the last command
+with:
+
+```bash
+LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a ctest --test-dir build/cmake \
+  -C Release -L runtime --output-on-failure
+```
+
+CTest configures a silent audio driver for automated tests. These tests check
+audio initialization and playback logic; listening through speakers remains a
+manual check.
+
+## Packaging and releases
+
+After a Release build, create a distributable archive:
+
+```bash
+cpack --config build/cmake/CPackConfig.cmake -C Release -B build/packages
+```
+
+CPack writes a `.tar.gz` archive on Linux and a `.zip` archive on Windows and
+macOS. Extract the entire archive and keep its resources beside the executable,
+or inside the macOS app bundle. Linux packages still require compatible system
+libraries and graphics drivers. macOS bundles use ad-hoc signing.
+
+The [GitHub Actions workflow](.github/workflows/cmake-multi-platform.yml) defines
+builds for Linux x64 and ARM64, Windows x64, and macOS Apple Silicon and Intel.
+Pushing a version tag such as `1.0.2` triggers the release workflow. Publication
+requires all build jobs and the Docker job to succeed. Consult
+[Actions](https://github.com/Hicha-m/solar-system/actions) for execution results
+and [Releases](https://github.com/Hicha-m/solar-system/releases) for published
+archives. A Git tag alone does not create a release.
+
+## Docker
+
+The [`Dockerfile`](Dockerfile) builds the application and SDL3 on Ubuntu 24.04.
+During the image build, it runs the unit tests and the OpenGL integration suite
+under Xvfb, then installs the application into the runtime image.
+
+```bash
+docker build -t solar-system .
+```
+
+The resulting image starts `./project` in `/app`. Interactive use requires
+forwarding a display and audio server from the host; the build command above
+performs the automated checks without that desktop setup.
+
+## Project layout
+
+```text
+src/           Application, animation, audio, cameras, rendering and simulation
+shaders/       GLSL vertex and fragment shaders
+textures/      Planet and space textures
+models/        Shuttle geometry and materials
+audio/         Source music and impact sounds
+third_party/   Bundled libraries and their license notices
+tools/         Asset preparation and MP4 export
+scripts/       CI, packaging verification and software renderer utilities
+tests/         C++ and Python tests
+docs/          CI and profiling documentation
+```
+
+See [`docs/ci.md`](docs/ci.md) for the CI configuration and
+[`docs/profiling.md`](docs/profiling.md) for the optional profiling build.
+
+## Troubleshooting
+
+| Problem | What to check |
+| --- | --- |
+| CMake cannot find SDL3 | Install the SDL3 development files. For the Ubuntu instructions above, include `-DCMAKE_PREFIX_PATH="$PWD/build/deps/sdl"` when configuring. |
+| CMake cannot find FFmpeg | Check that `ffmpeg -version` works in the same terminal before configuring. |
+| The application cannot create an OpenGL context | Check the graphics driver, OpenGL 3.3 support and access to a display. Use Xvfb for automated Linux runs without a display. |
+| Resources are missing | Launch from the generated runtime directory or an extracted package. Keep the complete resource tree with the executable. |
+| There is no sound | Check the system output and volume. Remove `SDL_AUDIO_DRIVER=dummy` from the environment for audible playback. |
+| The exporter cannot find the executable | Build the project first or supply its path with `--executable`. |
 
 ## License
 
-No license has been specified for this project yet.
+This repository does not currently include a project-level license. Third-party
+library notices are documented in [`third_party/README.md`](third_party/README.md)
+and its referenced license files.
