@@ -112,6 +112,8 @@ jobs:
           version: 3.2.10
           build-type: Release
           install-linux-dependencies: false
+          # Linux x64 and ARM64 must never reuse each other's SDL binaries.
+          discriminator: ${{ matrix.os }}-${{ runner.arch }}
       - name: Configure Unix
         if: runner.os != 'Windows'
         run: >-
